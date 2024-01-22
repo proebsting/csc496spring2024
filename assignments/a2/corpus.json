@@ -1,0 +1,46 @@
+{
+    "num_voters": 10,
+    "num_candidates": 3,
+    "max_unique_rankings": 4,
+    "max_ranking_length": 3,
+    "min_ranking_length": 3,
+    "num_elections": 1,
+    "elections": [
+        {
+            "ballots": [
+                {
+                    "ranking": [
+                        1,
+                        2,
+                        0
+                    ],
+                    "count": 4
+                },
+                {
+                    "ranking": [
+                        2,
+                        1,
+                        0
+                    ],
+                    "count": 3
+                },
+                {
+                    "ranking": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "count": 1
+                },
+                {
+                    "ranking": [
+                        1,
+                        0,
+                        2
+                    ],
+                    "count": 2
+                }
+            ]
+        }
+    ]
+}
