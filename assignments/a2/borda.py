@@ -2,7 +2,7 @@ from collections import Counter
 from os import name
 from typing import Hashable
 
-from common import Ballot, Result, Scheme
+from common.types import Ballot, Result, Scheme
 
 
 # borda count depends on the size of the ballot,
