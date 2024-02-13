@@ -2,7 +2,7 @@
 
 ## Due: 3:00pm on Fridays
 
-1. 2/23: IRV, Raynaud, Black, Copeland
+1. 2/23: IRV, River, Black, Copeland
 2. 3/1: Bucklin, Smith/IRV, Nansens
 3. 3/15: Dodgsons, Schulze, Sri-Lanken Contingency
 4. 3/22: Kemeny Young, Coombs, Baldwin
