@@ -1,9 +1,20 @@
 import sys
 import json
-from typing import Any
+from typing import Any, Hashable
 from io import TextIOWrapper
 
-from .types import Ballot
+from .types import Ballot, Election, Corpus
+
+
+def pretty_ballot_json(ballot: Ballot) -> str:
+    return f'{{ "count":{ballot.tally}, "ranking": {list(ballot.ranking)} }}'
+
+
+def pretty_election_json(election: Election) -> str:
+    prologue = '{ "ballots": [\n'
+    ballots = ",\n".join(pretty_ballot_json(b) for b in election.ballots)
+    epilogue = f'],\n"winners": {json.dumps(election.winners)} }}'
+    return prologue + ballots + epilogue
 
 
 def check_corpus(
@@ -71,16 +82,72 @@ def read_corpus(f: TextIOWrapper):
     return data
 
 
-def write_corpus(corpus: Any, f):
+def unmarshal_corpus(data: Any) -> Corpus:
+    return Corpus(
+        num_candidates=data["num_candidates"],
+        num_voters=data["num_voters"],
+        max_ranking_length=data["max_ranking_length"],
+        min_ranking_length=data["min_ranking_length"],
+        max_unique_rankings=data["max_unique_rankings"],
+        elections=elections_from_corpus(data),
+    )
+
+
+def elections_from_corpus(data: Any) -> list[Election]:
+    return [unmarshal_election(election) for election in data["elections"]]
+
+
+def unmarshal_elections(data: Any) -> list[Election]:
+    return [unmarshal_election(election) for election in data]
+
+
+def write_elections(elections: list[Election], f: TextIOWrapper):
+    f.write("[\n")
+    f.write(",\n".join(pretty_election_json(election) for election in elections))
+    f.write("\n]\n")
+
+
+def write_corpus(corpus: Any, f: TextIOWrapper):
     json.dump(corpus, f, indent=4)
 
 
-def marshal_ballot(ballot: Ballot):
-    return {"ranking": list[ballot.ranking], "count": ballot.tally}
+def marshal_ballot(ballot: Ballot) -> dict[str, Any]:
+    return {"ranking": list(ballot.ranking), "count": ballot.tally}
+
+
+def marshal_election(election: Election) -> dict[str, Any]:
+    return {
+        "ballots": [marshal_ballot(b) for b in election.ballots],
+        "winners": election.winners,
+    }
 
 
 def unmarshal_ballot(ballot: dict[str, Any]):
     return Ballot(tuple(ballot["ranking"]), ballot["count"])
+
+
+def unmarshal_election(data: Any) -> Election:
+    return Election(
+        [unmarshal_ballot(b) for b in data["ballots"]],
+        data["winners"] if "winners" in data else {},
+    )
+
+
+def read_list_of_ballots(f: TextIOWrapper) -> list[Ballot]:
+    data = json.load(f)
+    return [unmarshal_ballot(b) for b in data]
+
+
+def json_to_Election(data: Any) -> Election:
+    ballots = [unmarshal_ballot(b) for b in data["ballots"]]
+    winners: dict[str, Hashable] = data["winners"] if "winners" in data else {}
+    return Election(ballots, winners)
+
+
+def read_election(f: TextIOWrapper) -> Election:
+    data = json.load(f)
+    election = json_to_Election(data)
+    return election
 
 
 def main():
