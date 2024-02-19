@@ -14,7 +14,7 @@ def borda(ballots: list[Ballot]) -> Result:
     scores: Counter[Hashable] = Counter()
     for ballot in ballots:
         for i, candidate in enumerate(ballot.ranking):
-            scores[candidate] += points[i]
+            scores[candidate] += points[i] * ballot.tally
     max_score: int = max(scores.values())
     winners: list[Hashable] = [
         candidate for candidate, score in scores.items() if score == max_score

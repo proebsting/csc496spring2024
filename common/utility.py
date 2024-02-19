@@ -7,13 +7,13 @@ from .types import Ballot, Election, Corpus
 
 
 def pretty_ballot_json(ballot: Ballot) -> str:
-    return f'{{ "count":{ballot.tally}, "ranking": {list(ballot.ranking)} }}'
+    return f'{{ "count":{ballot.tally:3}, "ranking": {list(ballot.ranking)} }}'
 
 
 def pretty_election_json(election: Election) -> str:
     prologue = '{ "ballots": [\n'
     ballots = ",\n".join(pretty_ballot_json(b) for b in election.ballots)
-    epilogue = f'],\n"winners": {json.dumps(election.winners)} }}'
+    epilogue = f'],\n"winners": {json.dumps(election.winners,sort_keys=True)} }}'
     return prologue + ballots + epilogue
 
 
