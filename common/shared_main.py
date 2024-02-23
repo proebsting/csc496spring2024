@@ -1,5 +1,4 @@
 import argparse
-from pprint import pprint
 from typing import Hashable
 
 from .types import Scheme, Election
@@ -9,6 +8,7 @@ from .utility import (
     unmarshal_elections,
     write_elections,
     read_election,
+    pretty_election_json,
 )
 
 
@@ -68,7 +68,9 @@ def do_election(
     result = scheme(election.ballots)
     winner: Hashable = result[0] if result[1] else "<AMBIGUOUS>"
     if verbose:
-        pprint(election.ballots, indent=4)
+        pretty = pretty_election_json(election)
+        print(pretty)
+        # pprint(election.ballots, indent=4)
         print(result)
         if name in election.winners:
             print(f"Expected winner: {election.winners[name]}, actual winner: {winner}")
@@ -76,8 +78,10 @@ def do_election(
             print(f"Missing expected winner for {name}")
     if check and name in election.winners and election.winners[name] != winner:
         print(f"Error: {name} winner mismatch")
-        pprint(election.ballots, indent=4)
-        print(result)
+        pretty = pretty_election_json(election)
+        print(pretty)
+        # pprint(election.ballots, indent=4)
+        print("Computed winner:", result)
         print(f"Expected winner: {election.winners[name]}, actual winner: {result}")
     if overwrite:
         election.winners[name] = winner
