@@ -83,12 +83,15 @@ def do_election(
         # pprint(election.ballots, indent=4)
         print("Computed winner:", result)
         print(f"Expected winner: {election.winners[name]}, actual winner: {result}")
+        print()
     if overwrite:
         election.winners[name] = winner
 
 
 def shared_main(name: str, scheme: Scheme):
     args = parse_args()
+    if args.alias:
+        name = args.alias
     if args.election:
         do_election_file(
             args.election, name, scheme, args.check, args.overwrite, args.verbose
@@ -117,6 +120,7 @@ def parse_args():
     )
     parser.add_argument("--verbose", action="store_true", help="print election values")
     parser.add_argument("--check", action="store_true", help="check election values")
+    parser.add_argument("--alias", type=str, help="force new scheme name")
 
     args = parser.parse_args()
     return args
