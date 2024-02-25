@@ -9,7 +9,7 @@ from common.shared_main import shared_main
 # so we will use the length of the longest ballot
 # (a completely arbitrary choice)
 def borda(ballots: list[Ballot]) -> Result:
-    size: int = max(len(ballot.ranking) for ballot in ballots)
+    size: int = len(set(c for ballot in ballots for c in ballot.ranking))
     points: list[int] = [c for c in range(size - 1, -1, -1)]
     scores: Counter[Hashable] = Counter()
     for ballot in ballots:
